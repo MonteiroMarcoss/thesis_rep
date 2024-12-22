@@ -16,31 +16,31 @@ cov_macro <- GetBCBData::gbcbd_get_series(
  last.date = Sys.Date(),
  format.data = 'wide') |>
  transmute(Data = ref.date,
-           ibc = 100*difference(log(pib)), 
+           ibc = 100*difference(log(pib)), # para obter variacao percentual
            ipca = inflacao,
            selic = juros,
            taxa_cambio = 100*difference(log(cambio))) 
 
 # dados --------------------------------------------------------------------
 
-base <- read_csv("base_balancetes.csv") %>% # disponivel em https://www.bcb.gov.br/estabilidadefinanceira/balancetesbalancospatrimoniais
-  filter(DOCUMENTO == 4010, ) %>%
+base <- read_csv("base_balancetes.csv") |> # disponivel em https://www.bcb.gov.br/estabilidadefinanceira/balancetesbalancospatrimoniais
+  filter(DOCUMENTO == 4010, ) |>
  mutate(DATA = as.Date(paste0(as.character(DATA), "01"), format = "%Y%m%d"))
 
 cadastro <- read_csv("cadastro_ifs.csv") |> filter(Tcb == 'B1')
 
-bancos <- cadastro %>%
-  filter(Situacao == "A") %>%
-  pull(CnpjInstituicaoLider) %>%
+bancos <- cadastro |>
+  filter(Situacao == "A") |>
+  pull(CnpjInstituicaoLider) |>
   unique()
 
-base <- base %>%
-  filter(CNPJ %in% bancos) %>%
+base <- base |>
+  filter(CNPJ %in% bancos) |>
   drop_na()
 
-painel_full <- base %>%
-  select(-`NOME CONTA`, -DOCUMENTO) %>%
-  pivot_wider(names_from = "CONTA", values_from = "SALDO") %>%
+painel_full <- base |>
+  select(-`NOME CONTA`, -DOCUMENTO) |>
+  pivot_wider(names_from = "CONTA", values_from = "SALDO") |>
   transmute(
     Data = DATA,
     CNPJ = CNPJ,
