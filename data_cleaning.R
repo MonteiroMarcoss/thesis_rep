@@ -23,7 +23,7 @@ cov_macro <- GetBCBData::gbcbd_get_series(
 
 # dados --------------------------------------------------------------------
 
-base <- read_csv("base_balancetes.csv") %>%
+base <- read_csv("base_balancetes.csv") %>% # disponivel em https://www.bcb.gov.br/estabilidadefinanceira/balancetesbalancospatrimoniais
   filter(DOCUMENTO == 4010, ) %>%
  mutate(DATA = as.Date(paste0(as.character(DATA), "01"), format = "%Y%m%d"))
 
